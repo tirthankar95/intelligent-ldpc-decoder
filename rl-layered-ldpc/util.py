@@ -1,6 +1,6 @@
 import numpy as np
-import Global as Global
-import Graph as Graph
+from _global import *
+import LayeredDecoder.graph as graph
 
 #This function is used in MinSum decoder.
 def MIN(L):
@@ -40,20 +40,20 @@ def fn(Str,Sol,strt,k):
    
 def init():     
     global cnt,NoToStr,StrToNo
-    A=["" for i in range(Global.Layers) ]
-    for i in range(Global.Layers):
+    A=["" for i in range(Layers) ]
+    for i in range(Layers):
         A[i]=str(i)
     cnt=0
     StrToNo={}
-    NoToStr=[ 0 for i in range(Global.NStates) ]
-    fn(A,"",0,Global.subGroups)
+    NoToStr=[ 0 for i in range(NStates) ]
+    fn(A,"",0,subGroups)
 
 lim=0;codeword=[]
 def genAll(transitional):
     global lim,codeword
-    if lim==Global.LIMIT:
+    if lim==LIMIT:
         return
-    if len(transitional)==Global.n:  
+    if len(transitional)==n:  
         tmp=transitional[:]
         codeword.append(tmp)
         lim=lim+1
@@ -83,10 +83,10 @@ def display0(O):
         while len(qu)!=0:
             par=qu.pop()
             try:
-                Graph.g.adj[par]
+                graph.g.adj[par]
             except:
                 continue
-            for child in Graph.g.adj[par]:
+            for child in graph.g.adj[par]:
                 qu1.append(child.id)
                 print(child.value,end=" , ",file=sample)
         if len(qu1)!=0:
@@ -108,7 +108,7 @@ def display1(H,Ocode,Rcode,number):
     OcodeN=[];RcodeN=[];
     for i in range(n):
         Str="";Str1=""
-        for j in range(Global.n):  
+        for j in range(n):  
             if int(Ocode[i][j])==0:
                 Str=Str+'0'
             else:

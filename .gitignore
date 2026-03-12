@@ -1,0 +1,12 @@
+# Python cache
+**/__pycache__/
+*.py[cod]
+
+# VSCode settings
+.vscode/
+
+# Icons
+**/*.ico
+
+# Windows system files
+**/desktop.ini

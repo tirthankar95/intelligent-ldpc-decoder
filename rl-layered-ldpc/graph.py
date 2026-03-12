@@ -1,13 +1,13 @@
-import LDPCHelper as LD
-import Global as Global
+import LayeredDecoder.util as LD
+from _global import *
 
-class node:
+class Node:
     def __init__(self,ID,STATE):
-        self.id=ID
-        self.state=STATE
-        self.value=0
+        self.id = ID
+        self.state = STATE
+        self.value = 0
         
-class graph:
+class Graph:
     def __init__(self):
         self.adj={}
     def addEdge(self,u,v):
@@ -15,13 +15,14 @@ class graph:
             self.adj[u.id]=[]
         self.adj[u.id].append(v)                
 
-counter=0
-g=graph()
+counter = 0
+g = Graph()
+
 def build(O,state):
     global g,counter
-    if(len(state)==Global.Layers):
+    if(len(state) == Layers):
         counter=counter+1
-        obj=node(counter,state)
+        obj=Node(counter,state)
         g.addEdge(O,obj)
         return
     tmp={}
@@ -38,7 +39,7 @@ def build(O,state):
 
 if __name__=="__main__":
     LD.init()
-    O=node(counter,"")
+    O = Node(counter,"")
     build(O,"")
     
     
