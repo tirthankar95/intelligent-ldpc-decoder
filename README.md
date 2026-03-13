@@ -28,7 +28,7 @@ The repository contains three main approaches to improve LDPC decoding:
 
 2. Install dependencies (requirements may vary by subdirectory):
    ```bash
-   pip install -r requirements.txt
+   uv sync
    ```
 
 ## Usage

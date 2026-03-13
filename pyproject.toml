@@ -1,0 +1,13 @@
+[project]
+name = "intelligent-ldpc-decoder"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dask>=2026.1.2",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.3",
+    "pandas>=3.0.1",
+    "tensorflow>=2.21.0",
+]
