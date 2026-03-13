@@ -26,9 +26,14 @@ The repository contains three main approaches to improve LDPC decoding:
    cd intelligent-ldpc-decoder
    ```
 
-2. Install dependencies (requirements may vary by subdirectory):
+2. Install dependencies:
    ```bash
    uv sync
+   ```
+
+3. Activate environment:
+   ```bash
+   source .venv/bin/activate
    ```
 
 ## Usage
