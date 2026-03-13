@@ -48,7 +48,7 @@ int main(){
 	/*
 		| A | E | O |
 		--------------
-		| B | C | I | 
+		| B | C | I |
 	*/
 	//We have to design the E part of the matrix careful.
 	BG1[0][22]=0;BG1[0][23]=-1;BG1[0][24]=-1;BG1[0][25]=-1;

@@ -12,12 +12,12 @@ def ATANH(L):
             if L[i,j]!=np.nan:
                 try:
                     L[i,j]=math.atanh(L[i,j])
-                except:
+                except Exception:
                     L[i,j]=math.atanh(np.sign(L[i,j])*0.99)
     return L
 #My approximation of tanh using ML methods.
 def tanh_mine(x):
-    x[np.where(np.isnan(x)==True)]=-9999
+    x[np.where(np.isnan(x))]=-9999
     indx1 =np.where(( (x!=-9999) & (x>=-1.2) & (x<1.2)))
     indx2 = np.where(((x!=-9999) & (x >= 1.2)))
     indx3 = np.where(((x!=-9999) & (x < -1.2)))
@@ -28,7 +28,7 @@ def tanh_mine(x):
     return x
 #My approximation of atanh using ML methods.
 def atanh_mine(x):
-    x[np.where(np.isnan(x) == True)] = -9999
+    x[np.where(np.isnan(x))] = -9999
     indx1=np.where(( (x!=-9999) & (x<-0.85) ))
     indx2=np.where(( (x!=-9999) & (x>=-0.85) & (x<-0.75) ))
     indx3=np.where(( (x!=-9999) & (x>=-0.75) & (x< 0.75) ))
@@ -42,7 +42,8 @@ def atanh_mine(x):
     x[np.where(x == -9999)] = np.nan
     return x
 def genAll(m):
-    Global.msg=[];Global.example_cnt=0
+    Global.msg=[]
+    Global.example_cnt=0
     num=min(2**Global.k,m)
     Global.msg=np.random.randint(low=0,high=2,size=(num,Global.k)).tolist()
 # General helper functions.
@@ -55,7 +56,7 @@ def demod(approx):
     return res
 def MIN(L):
     (r,c)=L.shape
-    L[np.isnan(L)==True]=999
+    L[np.isnan(L)]=999
     for i in range(r):
         minF=minS=999
         for j in range(c):
@@ -85,7 +86,8 @@ model.compile(optimizer='sgd',
               loss=tf.keras.losses.MeanSquaredError(),
               metrics=['MeanSquaredError'])
 def atanh_NNtrain():
-    lb = -0.9999;RANGE = 100000
+    lb = -0.9999
+    RANGE = 100000
     offset = -2 * lb / RANGE
     X = np.array([lb + i * offset for i in range(RANGE+1)])
     for i in range(RANGE):
@@ -120,7 +122,8 @@ def atanh_mine_NN(x):
     return model.predict(np.array(xtest.T)).reshape(x.shape)
 def test():
     atanh_NNtrain()
-    lb = -0.9999;RANGE = 100
+    lb = -0.9999
+    RANGE = 100
     offset = -2 * lb / RANGE
     X=np.array([lb + i * offset for i in range(RANGE+1)])
     X=X.reshape(1,X.shape[0])

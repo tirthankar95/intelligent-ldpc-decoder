@@ -31,7 +31,7 @@ def ATANH(L):
             if L[i,j]!=np.nan:
                 try:
                     L[i,j]=math.atanh(L[i,j])
-                except:
+                except Exception:
                     L[i,j]=math.atanh(np.sign(L[i,j])*0.99)
     return L
 
@@ -41,7 +41,7 @@ def ATANH(L):
 
 def MIN(L):
     (r,c)=L.shape
-    L[np.isnan(L)==True]=999
+    L[np.isnan(L)]=999
     for i in range(r):
         minF=minS=999
         for j in range(c):
@@ -96,8 +96,8 @@ def decode(H,c_Rx):
             for i in range(mx_iter):
                 S=np.sign(L)
                 S=np.nanprod(S,axis=1).reshape(n-k,1)
-                l=MIN(np.abs(L))
-                L=np.sign(L/S)*l
+
+                L=np.sign(L/S)*MIN(np.abs(L))
                 lin=(lin+np.nansum(L,axis=0)).reshape(1,n)
                 L=lin-L
             d_bits[model]=demod(lin)
@@ -134,7 +134,7 @@ for iter__ in range(1,MX_STD):
         r_x,msg_en=encode(msg)
         d_bits=decode(H,r_x)
         for model in models:
-            if (d_bits[model]==msg_en).all()==True:
+            if (d_bits[model]==msg_en).all():
                 bler[iter__][model]+=1
     print('STD ->',std)
     for model in models:
@@ -142,4 +142,3 @@ for iter__ in range(1,MX_STD):
         bler[iter__][model]=1-bler[iter__][model]
         print('Model No ->',model,' = ',bler[iter__][model]*100,'%')
     print('----------')
-

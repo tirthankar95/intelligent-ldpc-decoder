@@ -1,11 +1,11 @@
 import numpy as np
-from _global import *
-import LayeredDecoder.graph as graph
+import _global as G
+import graph
 
 #This function is used in MinSum decoder.
 def MIN(L):
     (r,c)=L.shape
-    L[np.isnan(L)==True]=999
+    L[np.isnan(L)]=999
     for i in range(r):
         minF=minS=999
         for j in range(c):
@@ -27,7 +27,7 @@ def swap(A,a,b):
     tmp=A[a]
     A[a]=A[b]
     A[b]=tmp
-    
+
 def fn(Str,Sol,strt,k):
     global cnt,NoToStr,StrToNo
     if k==0:
@@ -37,34 +37,34 @@ def fn(Str,Sol,strt,k):
         return
     for i in range(strt,len(Str)):
         fn(Str,Sol+Str[i],i+1,k-1)
-   
-def init():     
+
+def init():
     global cnt,NoToStr,StrToNo
-    A=["" for i in range(Layers) ]
-    for i in range(Layers):
+    A=["" for i in range(G.Layers) ]
+    for i in range(G.Layers):
         A[i]=str(i)
     cnt=0
     StrToNo={}
-    NoToStr=[ 0 for i in range(NStates) ]
-    fn(A,"",0,subGroups)
+    NoToStr=[ 0 for i in range(G.NStates) ]
+    fn(A,"",0,G.subGroups)
 
-lim=0;codeword=[]
+lim, codeword = 0, []
 def genAll(transitional):
     global lim,codeword
-    if lim==LIMIT:
+    if lim==G.LIMIT:
         return
-    if len(transitional)==n:  
+    if len(transitional)==G.n:
         tmp=transitional[:]
         codeword.append(tmp)
         lim=lim+1
         return
-    transitional.append(0);
+    transitional.append(0)
     genAll(transitional)
     transitional.pop()
     transitional.append(1)
     genAll(transitional)
     transitional.pop()
-    
+
 def modulate(codeword):
     Arr=codeword.copy()
     indx0=np.where(Arr==0)
@@ -73,18 +73,18 @@ def modulate(codeword):
     Arr[indx1]=-1
     return Arr
 
-def display0(O):
+def display0(Ostate):
     sample=open("op.txt","w")
-    qu=[];qu1=[]
-    qu.append(O.id)
-    print(O.value,file=sample)
+    qu=[], qu1 = [], []
+    qu.append(Ostate.id)
+    print(Ostate.value,file=sample)
     print("-----------------",file=sample)
     while len(qu)!=0:
         while len(qu)!=0:
             par=qu.pop()
             try:
                 graph.g.adj[par]
-            except:
+            except Exception:
                 continue
             for child in graph.g.adj[par]:
                 qu1.append(child.id)
@@ -98,17 +98,18 @@ def display0(O):
 def display1(H,Ocode,Rcode,number):
     sample=open("op1.txt","w")
     print("H-Matrix",file=sample)
-    print(H,file=sample);print()
+    print(H,file=sample)
+    print()
     print("-------------------------------------------------------------",file=sample)
     print("|      |            |            |                            |",file=sample)
     print("|Sr No.| Corr. Code |   Rx. Code |           Number           |",file=sample)
     print("|      |            |            |                            |",file=sample)
     print("--------------------------------------------------------------",file=sample)
     n=Rcode.shape[0]
-    OcodeN=[];RcodeN=[];
+    OcodeN, RcodeN = [], []
     for i in range(n):
-        Str="";Str1=""
-        for j in range(n):  
+        Str, Str1 = "", ""
+        for j in range(n):
             if int(Ocode[i][j])==0:
                 Str=Str+'0'
             else:

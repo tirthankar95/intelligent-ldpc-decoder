@@ -7,7 +7,7 @@ import Global
 import dask
 from dask.distributed import Client
 MODEL=5
-alpha=0.5;beta=0.5
+alpha, beta = 0.5, 0.5
 ITER=10
 arrayStats=[]
 # 0 -> original model.
@@ -23,12 +23,12 @@ def ATANH(L):
             if L[i,j]!=np.nan:
                 try:
                     L[i,j]=math.atanh(L[i,j])
-                except:
+                except Exception:
                     L[i,j]=math.atanh(np.sign(L[i,j])*0.99)
     return L
 #My approximation of tanh using ML methods.
 def tanh_mine(x):
-    x[np.where(np.isnan(x)==True)]=-9999
+    x[np.where(np.isnan(x))]=-9999
     indx1 =np.where(( (x!=-9999) & (x>=-1.2) & (x<1.2)))
     indx2 = np.where(((x!=-9999) & (x >= 1.2)))
     indx3 = np.where(((x!=-9999) & (x < -1.2)))
@@ -39,7 +39,7 @@ def tanh_mine(x):
     return x
 #My approximation of atanh using ML methods.
 def atanh_mine(x):
-    x[np.where(np.isnan(x) == True)] = -9999
+    x[np.where(np.isnan(x))] = -9999
     indx1=np.where(( (x!=-9999) & (x<-0.85) ))
     indx2=np.where(( (x!=-9999) & (x>=-0.85) & (x<-0.75) ))
     indx3=np.where(( (x!=-9999) & (x>=-0.75) & (x< 0.75) ))
@@ -69,7 +69,7 @@ def genAllUtil(tmp,k,num):
         return
     tmp.pop()
 def genAll(tmp,m):
-    Global.msg=[];Global.example_cnt=0
+    Global.msg, Global.example_cnt = [], 0
     num=min(2**Global.k,m)
     genAllUtil(tmp,Global.k,num)
 # General helper functions.
@@ -82,7 +82,7 @@ def demod(approx):
     return res
 def MIN(L):
     (r,c)=L.shape
-    L[np.isnan(L)==True]=999
+    L[np.isnan(L)]=999
     for i in range(r):
         minF=minS=999
         for j in range(c):
@@ -121,8 +121,8 @@ def decode(H,c_Rx,globalstd):
             for i in range(mx_iter):
                 S=np.sign(L)
                 S=np.nanprod(S,axis=1).reshape(Global.n-Global.k,1)
-                l=MIN(np.abs(L))
-                L=np.sign(L/S)*l
+
+                L=np.sign(L/S)*MIN(np.abs(L))
                 L=alpha*L+beta
                 lin=(lin+np.nansum(L,axis=0)).reshape(1,Global.n)
                 L=lin-L
@@ -131,8 +131,8 @@ def decode(H,c_Rx,globalstd):
             for i in range(mx_iter):
                 S=np.sign(L)
                 S=np.nanprod(S,axis=1).reshape(Global.n-Global.k,1)
-                l=MIN(np.abs(L))
-                L=np.sign(L/S)*l
+
+                L=np.sign(L/S)*MIN(np.abs(L))
                 lin=(lin+np.nansum(L,axis=0)).reshape(1,Global.n)
                 L=lin-L
             d_bits[model]=demod(lin)
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     for i_upper in range(1,ITER):
         for i in range (c_Rx.shape[0]):
             for model in selModel: # FOR DIFF models check the accuracy.
-                if (dec_bits_collection[i_upper-1][i][model]==c_encoded[i]).all()==True:
+                if (dec_bits_collection[i_upper-1][i][model]==c_encoded[i]).all():
                     Global.code_err[model][i_upper - 1] +=1
         for model in range(MODEL):
             Global.code_err[model][i_upper-1]=1-Global.code_err[model][i_upper-1]/c_Rx.shape[0]

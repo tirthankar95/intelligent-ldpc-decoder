@@ -7,8 +7,8 @@ import Global
 import threading
 from DecoderHelper import ATANH,tanh_mine,atanh_mine,atanh_mine_poly,atanh_mine_NN,genAll,demod,MIN,atanh_NNtrain
 
-alpha=0.5;beta=0.5
-ITER=10;lowerLimit=4;mx_iter=5
+alpha, beta = 0.5, 0.5
+ITER, lowerLimit, mx_iter = 10, 4, 5
 selModel = [0,1,2,3,4,5]
 MODEL=len(selModel)
 # 0 -> original model.
@@ -40,8 +40,7 @@ def decode(H,c_Rx,std):
             for i in range(mx_iter):
                 S=np.sign(L)
                 S=np.nanprod(S,axis=1).reshape(Global.n-Global.k,1)
-                l=MIN(np.abs(L))
-                L=np.sign(L/S)*l
+                L=np.sign(L/S)*MIN(np.abs(L))
                 L=alpha*L+beta
                 lin=(lin+np.nansum(L,axis=0)).reshape(1,Global.n)
                 L=lin-L
@@ -50,11 +49,11 @@ def decode(H,c_Rx,std):
             for i in range(mx_iter):
                 S=np.sign(L)
                 S=np.nanprod(S,axis=1).reshape(Global.n-Global.k,1)
-                l=MIN(np.abs(L))
-                L=np.sign(L/S)*l
+
+                L=np.sign(L/S)*MIN(np.abs(L))
                 lin=(lin+np.nansum(L,axis=0)).reshape(1,Global.n)
                 L=lin-L
-            d_bits[model]=demod(lin)            
+            d_bits[model]=demod(lin)
         if model==3: # 3 -> tnh_atnh_approx model.
             for i in range(mx_iter):
                 L = tanh_mine(L/2)
@@ -99,12 +98,11 @@ class myThread(threading.Thread):
 def RUN(i_upper,name):
     print('---',i_upper,' ~ ',name,'---')
     std=i_upper/10
-    alpha, beta = mem[i_upper-1][0],mem[i_upper-1][1]#ml.train()
     c_Rx = epc.rx_message(c_encoded,std)
     for i in range(c_Rx.shape[0]):
         dec_bits=decode(H,c_Rx[i],std) ## get results for all the models.
         for model in selModel: # FOR DIFF models check the accuracy.
-            if (dec_bits[model]==c_encoded[i]).all()==True:
+            if (dec_bits[model]==c_encoded[i]).all():
                 Global.code_err[model][i_upper - lowerLimit] +=1
 # Calculating the BLER
     for model in range(MODEL):

@@ -1,5 +1,4 @@
 import numpy as np
-import random as r
 import Global
 
 def encode(msg):
